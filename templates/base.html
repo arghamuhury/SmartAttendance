@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="top-header">
+        {% if current_user.is_authenticated %}
+            <div>
+                {% if current_user.role == 'student' %}
+                    <a href="{{ url_for('student.dashboard') }}">← Academics</a>
+                {% elif current_user.role == 'faculty' %}
+                    <a href="{{ url_for('faculty.dashboard') }}">← Faculty Portal</a>
+                {% elif current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin.dashboard') }}">← Admin Panel</a>
+                {% endif %}
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                {% if current_user.role == 'student' %}
+                    <a href="{{ url_for('student.scan') }}" style="display: flex; align-items: center; color: var(--text-color);" title="Scan QR Code">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/>
+                            <rect width="6" height="6" x="9" y="9" rx="1"/>
+                        </svg>
+                    </a>
+                {% endif %}
+                <a href="{{ url_for('auth.logout') }}" style="font-size: 0.9em;">Logout</a>
+            </div>
+        {% else %}
+            <div>Smart Attendance</div>
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+        
+        {% block content %}{% endblock %}
+    </div>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

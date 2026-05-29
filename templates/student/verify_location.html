@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card" style="text-align: center; margin-top: 50px;">
+    <h2 style="margin-bottom: 10px;">{{ session.subject.name }}</h2>
+    <div class="subtitle" style="margin-bottom: 30px;">Verifying your location to mark attendance...</div>
+    
+    <div id="status-message" class="title" style="color: var(--accent-blue);">Requesting GPS Permissions...</div>
+    <div id="error-message" class="subtitle" style="color: var(--accent-danger); margin-top: 10px; display: none;"></div>
+    
+    <div style="margin-top: 30px;">
+        <button id="retry-btn" class="btn" style="display: none;" onclick="getLocation()">Retry</button>
+        <a id="dashboard-btn" href="{{ url_for('student.dashboard') }}" class="btn btn-secondary" style="display: none; margin-top: 10px;">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function getLocation() {
+        document.getElementById('status-message').textContent = "Acquiring coordinates...";
+        document.getElementById('status-message').style.color = "var(--accent-blue)";
+        document.getElementById('error-message').style.display = "none";
+        document.getElementById('retry-btn').style.display = "none";
+        document.getElementById('dashboard-btn').style.display = "none";
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(sendLocation, showError, {
+                enableHighAccuracy: true,
+                timeout: 10000,
+                maximumAge: 0
+            });
+        } else {
+            displayError("Geolocation is not supported by this browser.");
+        }
+    }
+
+    function sendLocation(position) {
+        document.getElementById('status-message').textContent = "Verifying with server...";
+        
+        const data = {
+            token: "{{ token }}",
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+        };
+
+        fetch("{{ url_for('student.mark_with_location') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                document.getElementById('status-message').textContent = data.message;
+                document.getElementById('status-message').style.color = "var(--accent-green)";
+                document.getElementById('dashboard-btn').style.display = "inline-block";
+            } else {
+                displayError(data.message);
+            }
+        })
+        .catch((error) => {
+            displayError("Network error occurred while verifying location.");
+        });
+    }
+
+    function showError(error) {
+        let msg = "An unknown error occurred.";
+        switch(error.code) {
+            case error.PERMISSION_DENIED:
+                msg = "You denied the request for Geolocation. We cannot mark attendance without it.";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                msg = "Location information is unavailable.";
+                break;
+            case error.TIMEOUT:
+                msg = "The request to get user location timed out.";
+                break;
+        }
+        displayError(msg);
+    }
+    
+    function displayError(msg) {
+        document.getElementById('status-message').textContent = "Verification Failed";
+        document.getElementById('status-message').style.color = "var(--accent-danger)";
+        document.getElementById('error-message').textContent = msg;
+        document.getElementById('error-message').style.display = "block";
+        document.getElementById('retry-btn').style.display = "inline-block";
+        document.getElementById('dashboard-btn').style.display = "inline-block";
+    }
+
+    // Auto-start on page load
+    window.onload = function() {
+        getLocation();
+    };
+</script>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card {% if overall_percentage < 75 %}card-blue-border{% endif %}">
+    <div class="flex-between">
+        <div class="flex-col">
+            <div class="title">Overall attendance</div>
+            <div class="stat-value {% if overall_percentage >= 75 %}good{% endif %}">
+                {{ overall_percentage }}%
+            </div>
+            <div class="subtitle">{{ attended_sessions }} of {{ total_sessions }} sessions attended</div>
+        </div>
+        <div class="circular-progress {% if overall_percentage >= 75 %}good{% endif %}"></div>
+    </div>
+</div>
+
+<h3 style="margin: 20px 0 10px 5px;">Subject-wise Attendance</h3>
+
+{% for item in subject_attendance %}
+<div class="card">
+    <div class="flex-between">
+        <div class="title">{{ item.subject_name }}</div>
+        <div class="stat-value" style="font-size: 1.2rem; {% if item.percentage >= 75 %}color: var(--accent-green);{% endif %}">{{ item.percentage }}%</div>
+    </div>
+    <div class="progress-container">
+        <div class="progress-bar {% if item.percentage >= 75 %}good{% endif %}" style="width: {{ item.percentage }}%"></div>
+    </div>
+    <div class="subtitle" style="margin-top: 8px;">
+        {{ item.attended }} of {{ item.total }} sessions
+    </div>
+</div>
+{% endfor %}
+
+<h3 style="margin: 20px 0 10px 5px;">Recent Records</h3>
+
+{% for record in recent_records %}
+<div class="card flex-between" style="padding: 15px;">
+    <div class="flex-col">
+        <div style="font-weight: 500;">{{ record.session.subject.name }}</div>
+        <div class="subtitle">{{ record.timestamp.strftime('%d %b, %I:%M %p') }}</div>
+    </div>
+    <div class="badge badge-green">PRESENT (P)</div>
+</div>
+{% else %}
+<p style="text-align: center; color: var(--text-muted); margin-top: 20px;">No recent attendance records.</p>
+{% endfor %}
+{% endblock %}

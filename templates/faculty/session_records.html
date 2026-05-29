@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card card-blue-border" style="margin-bottom: 20px;">
+    <div class="title">{{ session.subject.name }}</div>
+    <div class="subtitle">{{ session.date.strftime('%B %d, %Y') }}</div>
+    <div style="margin-top: 10px;">
+        Status: {% if session.is_active %}<span class="badge badge-green">LIVE</span>{% else %}<span class="badge badge-neutral">ENDED</span>{% endif %}
+    </div>
+</div>
+
+<h3 style="margin: 20px 0 10px 5px;">Attendance Records ({{ records|length }})</h3>
+{% for record in records %}
+<div class="card flex-between" style="padding: 15px;">
+    <div>
+        <div style="font-weight: 500;">{{ record.student.name }}</div>
+        <div class="subtitle">{{ record.student.username }}</div>
+    </div>
+    <div class="flex-col" style="align-items: flex-end;">
+        <div class="badge badge-green">PRESENT (P)</div>
+        <div class="subtitle" style="font-size: 0.75rem; margin-top: 5px;">{{ record.timestamp.strftime('%I:%M %p') }}</div>
+    </div>
+</div>
+{% else %}
+<p style="text-align: center; color: var(--text-muted); margin-top: 20px;">No records for this session.</p>
+{% endfor %}
+{% endblock %}

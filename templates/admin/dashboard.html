@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="title" style="margin-bottom: 20px;">Admin Dashboard</div>
+    
+    <div class="flex-between" style="margin-bottom: 10px;">
+        <div class="subtitle">Total Students</div>
+        <div class="stat-value" style="margin: 0; font-size: 1.5rem;">{{ students }}</div>
+    </div>
+    
+    <div class="flex-between" style="margin-bottom: 10px;">
+        <div class="subtitle">Total Faculty</div>
+        <div class="stat-value" style="margin: 0; font-size: 1.5rem; color: var(--accent-green);">{{ faculty }}</div>
+    </div>
+    
+    <div class="flex-between" style="margin-bottom: 20px;">
+        <div class="subtitle">Total Subjects</div>
+        <div class="stat-value" style="margin: 0; font-size: 1.5rem; color: white;">{{ subjects }}</div>
+    </div>
+    
+    <div style="display: flex; gap: 10px; flex-direction: column;">
+        <a href="{{ url_for('admin.manage_users') }}" class="btn">Manage Users</a>
+        <a href="{{ url_for('admin.manage_subjects') }}" class="btn btn-secondary">Manage Subjects</a>
+    </div>
+</div>
+{% endblock %}

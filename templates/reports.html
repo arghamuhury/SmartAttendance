@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="mb-4">
+    <h2 class="fw-bold">Analytics & Reports</h2>
+    <p class="text-muted">Visual insights into attendance data.</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white pb-0 border-0 pt-4 px-4">
+                <h5 class="fw-bold">Weekly Attendance Trend</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="attendanceChart" height="100"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm h-100 bg-primary text-white text-center">
+            <div class="card-body d-flex flex-column justify-content-center">
+                <i class="fas fa-file-pdf fa-4x mb-4 opacity-50"></i>
+                <h4 class="fw-bold">Generate Defaulter List</h4>
+                <p class="small opacity-75 mb-4">Export a list of students with attendance below 75% for the current semester.</p>
+                <button class="btn btn-light rounded-pill fw-bold text-primary" onclick="alert('This feature can be extended with further database aggregation logic!')">
+                    Download PDF Report
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    
+    // Mock data for the chart - in a real app, pass this from the backend
+    const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Students Present',
+            data: [45, 48, 42, 50, 39, 41],
+            fill: true,
+            backgroundColor: 'rgba(67, 97, 238, 0.2)',
+            borderColor: 'rgba(67, 97, 238, 1)',
+            tension: 0.4,
+            borderWidth: 2,
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 4
+        }]
+    };
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: data,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 60 // Assuming total 60 students for mock
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

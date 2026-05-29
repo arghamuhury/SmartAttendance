@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="title" style="margin-bottom: 15px;">Start Attendance Session</div>
+    <form method="POST" action="{{ url_for('faculty.start_session') }}" id="startSessionForm">
+        <select name="subject_id" required>
+            <option value="" disabled selected>Select Subject</option>
+            {% for subject in subjects %}
+                <option value="{{ subject.id }}">{{ subject.name }} ({{ subject.code }})</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="latitude" id="latitude">
+        <input type="hidden" name="longitude" id="longitude">
+        <button type="submit" class="btn" id="startBtn">Generate Live QR</button>
+    </form>
+    
+    <script>
+    document.getElementById('startSessionForm').addEventListener('submit', function(e) {
+        if (!document.getElementById('latitude').value) {
+            e.preventDefault();
+            const btn = document.getElementById('startBtn');
+            const originalText = btn.innerText;
+            btn.innerText = "Acquiring GPS...";
+            btn.disabled = true;
+            
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    document.getElementById('latitude').value = position.coords.latitude;
+                    document.getElementById('longitude').value = position.coords.longitude;
+                    document.getElementById('startSessionForm').submit();
+                }, function(error) {
+                    alert("Location access denied or unavailable. Cannot start a secure session.");
+                    btn.innerText = originalText;
+                    btn.disabled = false;
+                }, {
+                    enableHighAccuracy: true
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+    });
+    </script>
+</div>
+
+<h3 style="margin: 20px 0 10px 5px;">Active Sessions</h3>
+{% for session in active_sessions %}
+<div class="card card-green-border">
+    <div class="flex-between" style="margin-bottom: 10px;">
+        <div class="title">{{ session.subject.name }}</div>
+        <div class="badge badge-green">LIVE</div>
+    </div>
+    <div class="subtitle">{{ session.date.strftime('%B %d, %Y') }}</div>
+    <div style="margin-top: 15px; display: flex; gap: 10px;">
+        <a href="{{ url_for('faculty.live_qr', session_id=session.id) }}" class="btn" style="flex: 1;">Show QR</a>
+        <form method="POST" action="{{ url_for('faculty.end_session', session_id=session.id) }}" style="flex: 1;">
+            <button type="submit" class="btn btn-secondary" style="color: var(--accent-danger); border-color: var(--accent-danger);">End Session</button>
+        </form>
+    </div>
+</div>
+{% else %}
+<p style="text-align: center; color: var(--text-muted); margin-top: 20px;">No active sessions.</p>
+{% endfor %}
+
+<h3 style="margin: 20px 0 10px 5px;">Past Sessions</h3>
+{% for session in past_sessions %}
+<div class="card">
+    <div class="flex-between">
+        <div class="title">{{ session.subject.name }}</div>
+        <div class="subtitle">{{ session.date.strftime('%B %d, %Y') }}</div>
+    </div>
+    <div style="margin-top: 10px;">
+        <a href="{{ url_for('faculty.session_records', session_id=session.id) }}" style="color: var(--header-red); text-decoration: none; font-size: 0.9rem; font-weight: 500;">View Records →</a>
+    </div>
+</div>
+{% else %}
+<p style="text-align: center; color: var(--text-muted); margin-top: 20px;">No past sessions.</p>
+{% endfor %}
+{% endblock %}

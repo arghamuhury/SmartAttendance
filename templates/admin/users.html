@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="title" style="margin-bottom: 20px;">Add User</div>
+    <form method="POST" action="{{ url_for('admin.add_user') }}">
+        <input type="text" name="name" placeholder="Full Name" required>
+        <input type="text" name="username" placeholder="Username / Roll No" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <select name="role" required>
+            <option value="student">Student</option>
+            <option value="faculty">Faculty</option>
+        </select>
+        <input type="text" name="department" placeholder="Department (Optional)">
+        <button type="submit" class="btn">Add User</button>
+    </form>
+</div>
+
+<h3 style="margin: 20px 0 10px 5px;">Existing Users</h3>
+{% for user in users %}
+<div class="card flex-between" style="padding: 15px;">
+    <div>
+        <div style="font-weight: 500;">{{ user.name }}</div>
+        <div class="subtitle">{{ user.username }} &bull; {{ user.department }}</div>
+    </div>
+    <div class="badge {% if user.role == 'student' %}badge-neutral{% else %}badge-green{% endif %}" style="text-transform: uppercase;">
+        {{ user.role }}
+    </div>
+</div>
+{% else %}
+<p style="text-align: center; color: var(--text-muted); margin-top: 20px;">No users found.</p>
+{% endfor %}
+{% endblock %}

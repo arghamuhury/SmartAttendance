@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+    .qr-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin: 20px auto;
+        width: 250px;
+        height: 250px;
+    }
+    .qr-fullscreen {
+        text-align: center;
+    }
+    .url-display {
+        background-color: #333;
+        padding: 10px;
+        border-radius: 8px;
+        font-family: monospace;
+        font-size: 0.9rem;
+        word-break: break-all;
+        margin-bottom: 20px;
+        color: var(--accent-blue);
+    }
+    .timer {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--accent-blue);
+        margin: 10px 0;
+    }
+    .timer.urgent {
+        color: var(--accent-danger);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="qr-fullscreen">
+    <h2 style="margin-bottom: 10px;">{{ session.subject.name }}</h2>
+    <div class="subtitle">Scan to verify location and mark attendance</div>
+    
+    <div id="countdown" class="timer">05:00</div>
+    
+    <div class="qr-container" id="qrcode"></div>
+    
+    <p style="margin-bottom: 5px;">Or visit this URL manually:</p>
+    <div class="url-display">{{ qr_url }}</div>
+    
+    <div class="card card-danger-border" style="text-align: left; margin-top: 30px;">
+        <div class="title">Session Details</div>
+        <div class="flex-between" style="margin-top: 10px;">
+            <div>Status: <span id="status-badge" class="badge badge-green">LIVE</span></div>
+            <div>Scans: <strong id="scan-count">{{ records|length }}</strong></div>
+        </div>
+    </div>
+    
+    <form method="POST" action="{{ url_for('faculty.end_session', session_id=session.id) }}">
+        <button type="submit" class="btn" style="background-color: transparent; border: 2px solid var(--accent-danger); color: var(--accent-danger); margin-top: 20px;">
+            End Session Manually
+        </button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    var currentUrl = "{{ qr_url }}";
+    
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: currentUrl,
+        width: 250,
+        height: 250,
+        colorDark : "#000000",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+    
+    // Countdown Timer Logic
+    var createdAt = new Date("{{ session.created_at.isoformat() }}Z").getTime();
+    var expiryMinutes = {{ config['SESSION_EXPIRY_MINUTES'] }};
+    var expiryTime = createdAt + (expiryMinutes * 60 * 1000);
+    
+    var timerInterval = setInterval(function() {
+        var now = new Date().getTime();
+        var distance = expiryTime - now;
+        
+        if (distance < 0) {
+            clearInterval(timerInterval);
+            document.getElementById("countdown").innerHTML = "EXPIRED";
+            document.getElementById("countdown").classList.add("urgent");
+            document.getElementById("status-badge").className = "badge badge-neutral";
+            document.getElementById("status-badge").textContent = "ENDED";
+            // Clear QR code to stop scanning
+            document.getElementById("qrcode").innerHTML = "<div style='color:black;'>Session Expired</div>";
+            document.querySelector('.url-display').textContent = "Session Expired";
+            return;
+        }
+        
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        
+        var displayMin = minutes < 10 ? "0" + minutes : minutes;
+        var displaySec = seconds < 10 ? "0" + seconds : seconds;
+        
+        document.getElementById("countdown").innerHTML = displayMin + ":" + displaySec;
+        
+        if (minutes < 1) {
+            document.getElementById("countdown").classList.add("urgent");
+        }
+    }, 1000);
+    
+    // Optional: Refresh the page periodically to fetch the actual scan count from the backend
+    setInterval(function() {
+        if(document.getElementById("countdown").innerHTML !== "EXPIRED") {
+             // You could implement a small fetch here to get scan count if you don't want to reload the whole page
+        }
+    }, 10000);
+</script>
+{% endblock %}

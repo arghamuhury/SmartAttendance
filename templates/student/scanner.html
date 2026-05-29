@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block extra_head %}
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<style>
+    .scanner-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    #reader {
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        background-color: var(--card-bg);
+    }
+    .scanner-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="scanner-container">
+    <div class="card">
+        <div class="scanner-header">
+            <h2>Scan Attendance QR Code</h2>
+            <p class="subtitle" style="margin-top: 10px;">Point your camera at the QR code displayed by your faculty.</p>
+        </div>
+        
+        <div id="reader"></div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{{ url_for('student.dashboard') }}" class="btn btn-danger">Cancel</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", 
+            { fps: 10, qrbox: {width: 250, height: 250} },
+            /* verbose= */ false
+        );
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // handle the scanned code as you like, for example:
+            console.log(`Code matched = ${decodedText}`, decodedResult);
+            
+            // Stop scanning to avoid multiple redirects
+            html5QrcodeScanner.clear().then(_ => {
+                // Determine if decoded text is a full URL or just a token
+                // Most likely it is the full URL from the admin/faculty page
+                if (decodedText.startsWith('http://') || decodedText.startsWith('https://')) {
+                    window.location.href = decodedText;
+                } else if (decodedText.startsWith('/')) {
+                    window.location.href = decodedText;
+                } else {
+                    // Assume it's just the token
+                    window.location.href = "/student/mark/" + decodedText;
+                }
+            }).catch(error => {
+                console.error("Failed to clear html5QrcodeScanner. ", error);
+            });
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning.
+            // console.warn(`Code scan error = ${error}`);
+        }
+
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+    });
+</script>
+{% endblock %}
