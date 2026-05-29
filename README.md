@@ -48,7 +48,7 @@ A comprehensive Smart Attendance System built with Flask, featuring portals for 
    - **Password**: `admin123`
 
 ## Usage
-- Open your browser and navigate to `http://localhost:5000` or `http://127.0.0.1:5000`
+- Open your browser and navigate to `https://smartattendance.pythonanywhere.com/`
 - Log in using the default admin credentials or as a faculty/student if registered.
 
 ## License
