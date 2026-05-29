@@ -50,16 +50,11 @@ SmartAttendance/
 │   ├── init_db.py
 │   └── models.py
 │
-├── dataset/
-│
-├── models/
-│
 ├── routes/
 │   ├── admin.py
 │   ├── attendance.py
 │   ├── auth.py
 │   ├── dashboard.py
-│   ├── face.py
 │   ├── faculty.py
 │   └── student.py
 │
@@ -71,35 +66,28 @@ SmartAttendance/
 │   └── js/
 │       └── main.js
 │
-├── templates/
-│   ├── attendance.html
-│   ├── base.html
-│   ├── capture.html
-│   ├── dashboard.html
-│   ├── login.html
-│   ├── recognize.html
-│   ├── reports.html
-│   ├── students.html
-│   ├── train.html
-│   │
-│   ├── admin/
-│   │   ├── dashboard.html
-│   │   ├── subjects.html
-│   │   └── users.html
-│   │
-│   ├── faculty/
-│   │   ├── dashboard.html
-│   │   ├── live_qr.html
-│   │   └── session_records.html
-│   │
-│   └── student/
-│       ├── dashboard.html
-│       ├── scanner.html
-│       └── verify_location.html
-│
-└── utils/
-    ├── camera.py
-    └── face_utils.py
+└── templates/
+    ├── attendance.html
+    ├── base.html
+    ├── dashboard.html
+    ├── login.html
+    ├── reports.html
+    ├── students.html
+    │
+    ├── admin/
+    │   ├── dashboard.html
+    │   ├── subjects.html
+    │   └── users.html
+    │
+    ├── faculty/
+    │   ├── dashboard.html
+    │   ├── live_qr.html
+    │   └── session_records.html
+    │
+    └── student/
+        ├── dashboard.html
+        ├── scanner.html
+        └── verify_location.html
 ```
 
 ## Installation and Setup
