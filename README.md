@@ -43,18 +43,18 @@ SmartAttendance/
 ├── README.md
 ├── .gitignore
 │
-├── attendance_exports/       # (Empty directory - likely for downloaded reports)
+├── attendance_exports/
 │
-├── database/                 # Database initialization and schema definitions
-│   ├── app.db                # SQLite database file
-│   ├── init_db.py            # Script to initialize database tables
-│   └── models.py             # Database ORM models
+├── database/
+│   ├── app.db
+│   ├── init_db.py
+│   └── models.py
 │
-├── dataset/                  # (Empty directory - likely for storing face images for training)
+├── dataset/
 │
-├── models/                   # (Empty directory - likely for storing trained ML models)
+├── models/
 │
-├── routes/                   # Application routes/controllers separated by domain
+├── routes/
 │   ├── admin.py
 │   ├── attendance.py
 │   ├── auth.py
@@ -63,15 +63,15 @@ SmartAttendance/
 │   ├── faculty.py
 │   └── student.py
 │
-├── static/                   # Static assets for the web application
+├── static/
 │   ├── css/
 │   │   ├── index.css
 │   │   └── style.css
-│   ├── images/               # (Empty directory)
+│   ├── images/
 │   └── js/
 │       └── main.js
 │
-├── templates/                # HTML templates for rendering views
+├── templates/
 │   ├── attendance.html
 │   ├── base.html
 │   ├── capture.html
@@ -82,24 +82,24 @@ SmartAttendance/
 │   ├── students.html
 │   ├── train.html
 │   │
-│   ├── admin/                # Admin-specific templates
+│   ├── admin/
 │   │   ├── dashboard.html
 │   │   ├── subjects.html
 │   │   └── users.html
 │   │
-│   ├── faculty/              # Faculty-specific templates
+│   ├── faculty/
 │   │   ├── dashboard.html
 │   │   ├── live_qr.html
 │   │   └── session_records.html
 │   │
-│   └── student/              # Student-specific templates
+│   └── student/
 │       ├── dashboard.html
 │       ├── scanner.html
 │       └── verify_location.html
 │
-└── utils/                    # Helper utilities and shared logic
-    ├── camera.py             # Camera/Video stream utilities
-    └── face_utils.py         # Face detection/recognition helper functions
+└── utils/
+    ├── camera.py
+    └── face_utils.py
 ```
 
 ## Installation and Setup
