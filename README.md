@@ -31,6 +31,77 @@ This project is built using a robust and scalable technology stack:
 - **Frontend**: HTML5, Vanilla CSS3, JavaScript, Jinja2 Templating Engine
 - **Deployment & Hosting**: PythonAnywhere (Production Environment)
 
+## Project Architecture
+
+```text
+SmartAttendance/
+├── app.py
+├── config.py
+├── migrate.py
+├── tempCodeRunnerFile.py
+├── requirements.txt
+├── README.md
+├── .gitignore
+│
+├── attendance_exports/       # (Empty directory - likely for downloaded reports)
+│
+├── database/                 # Database initialization and schema definitions
+│   ├── app.db                # SQLite database file
+│   ├── init_db.py            # Script to initialize database tables
+│   └── models.py             # Database ORM models
+│
+├── dataset/                  # (Empty directory - likely for storing face images for training)
+│
+├── models/                   # (Empty directory - likely for storing trained ML models)
+│
+├── routes/                   # Application routes/controllers separated by domain
+│   ├── admin.py
+│   ├── attendance.py
+│   ├── auth.py
+│   ├── dashboard.py
+│   ├── face.py
+│   ├── faculty.py
+│   └── student.py
+│
+├── static/                   # Static assets for the web application
+│   ├── css/
+│   │   ├── index.css
+│   │   └── style.css
+│   ├── images/               # (Empty directory)
+│   └── js/
+│       └── main.js
+│
+├── templates/                # HTML templates for rendering views
+│   ├── attendance.html
+│   ├── base.html
+│   ├── capture.html
+│   ├── dashboard.html
+│   ├── login.html
+│   ├── recognize.html
+│   ├── reports.html
+│   ├── students.html
+│   ├── train.html
+│   │
+│   ├── admin/                # Admin-specific templates
+│   │   ├── dashboard.html
+│   │   ├── subjects.html
+│   │   └── users.html
+│   │
+│   ├── faculty/              # Faculty-specific templates
+│   │   ├── dashboard.html
+│   │   ├── live_qr.html
+│   │   └── session_records.html
+│   │
+│   └── student/              # Student-specific templates
+│       ├── dashboard.html
+│       ├── scanner.html
+│       └── verify_location.html
+│
+└── utils/                    # Helper utilities and shared logic
+    ├── camera.py             # Camera/Video stream utilities
+    └── face_utils.py         # Face detection/recognition helper functions
+```
+
 ## Installation and Setup
 
 Follow these detailed steps to run the Smart Attendance System on your local machine for development and testing purposes.
