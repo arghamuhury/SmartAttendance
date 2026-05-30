@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, send_from_directory
 from flask_login import LoginManager
 from flask_bcrypt import Bcrypt
 from config import Config
@@ -37,6 +37,16 @@ def create_app(config_class=Config):
     @app.route('/')
     def index():
         return redirect(url_for('auth.login'))
+
+    @app.route('/manifest.json')
+    def manifest():
+        return send_from_directory('static', 'manifest.json')
+
+    @app.route('/sw.js')
+    def service_worker():
+        response = send_from_directory('static', 'sw.js')
+        response.headers['Cache-Control'] = 'no-cache'
+        return response
 
     # Error Handlers
     @app.errorhandler(404)
